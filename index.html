@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Longhorn 4074 Browser Recreated</title>
+<style>
+  /* Reset */
+  * {
+    box-sizing: border-box;
+  }
+
+  body, html {
+    margin: 0; padding: 0;
+    height: 100%;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    background: url('https://i.imgur.com/XLKtiqy.jpg') no-repeat center center fixed; /* Longhorn 4074 wallpaper */
+    background-size: cover;
+    overflow: hidden;
+  }
+
+  /* Desktop */
+  #desktop {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+  }
+
+  /* Taskbar */
+  #taskbar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 40px;
+    background: rgba(180, 210, 240, 0.75);
+    backdrop-filter: blur(10px);
+    border-top: 1px solid rgba(255, 255, 255, 0.3);
+    display: flex;
+    align-items: center;
+    padding: 0 8px;
+    user-select: none;
+  }
+
+  /* Start Orb */
+  #start-orb {
+    width: 32px;
+    height: 32px;
+    background: url('https://i.imgur.com/DK05Lqe.png') no-repeat center center;
+    background-size: contain;
+    cursor: pointer;
+    margin-right: 10px;
+    filter: drop-shadow(0 0 2px rgba(0,0,0,0.4));
+  }
+
+  /* Start Menu */
+  #start-menu {
+    position: fixed;
+    bottom: 40px;
+    left: 8px;
+    width: 260px;
+    background: rgba(230, 240, 255, 0.85);
+    border-radius: 8px 0 8px 8px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.3);
+    backdrop-filter: blur(15px);
+    display: none;
+    flex-direction: column;
+    padding: 10px;
+    font-size: 14px;
+    color: #222;
+  }
+
+  #start-menu h3 {
+    margin: 0 0 10px 5px;
+    font-weight: 600;
+  }
+
+  #start-menu ul {
+    list-style: none;
+    margin: 0;
+    padding: 0 10px;
+  }
+
+  #start-menu ul li {
+    padding: 6px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  #start-menu ul li:hover {
+    background: #a1c4fd;
+    color: white;
+  }
+
+  /* Taskbar right - clock */
+  #taskbar-clock {
+    margin-left: auto;
+    color: #222;
+    font-weight: 600;
+    font-size: 14px;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    text-shadow: 1px 1px 0 white;
+  }
+
+  /* Window style */
+  .window {
+    position: absolute;
+    width: 400px;
+    height: 280px;
+    background: rgba(255 255 255 / 0.15);
+    border-radius: 10px;
+    border: 1px solid rgba(255 255 255 / 0.35);
+    backdrop-filter: blur(20px);
+    box-shadow: 0 0 30px rgba(0 0 0 / 0.35);
+    color: #000;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    user-select: none;
+    cursor: default;
+  }
+
+  .window-header {
+    height: 32px;
+    background: rgba(255 255 255 / 0.25);
+    backdrop-filter: blur(30px);
+    display: flex;
+    align-items: center;
+    padding: 0 8px;
+    font-weight: 600;
+    font-size: 13px;
+    color: #111;
+    cursor: move;
+    border-bottom: 1px solid rgba(0 0 0 / 0.1);
+  }
+
+  .window-close {
+    margin-left: auto;
+    width: 20px;
+    height: 20px;
+    line-height: 20px;
+    text-align: center;
+    font-weight: 700;
+    color: #333;
+    cursor: pointer;
+    border-radius: 4px;
+  }
+
+  .window-close:hover {
+    background: #e81123;
+    color: white;
+  }
+
+  .window-content {
+    padding: 15px;
+    font-size: 14px;
+    flex-grow: 1;
+    overflow: auto;
+    color: #222;
+  }
+
+  /* Some icon style for start menu items */
+  .start-menu-icon {
+    width: 20px;
+    height: 20px;
+    vertical-align: middle;
+    margin-right: 8px;
+    filter: drop-shadow(0 0 1px rgba(0,0,0,0.2));
+  }
+
+</style>
+</head>
+<body>
+<div id="desktop">
+  <!-- Windows container -->
+</div>
+
+<!-- Taskbar -->
+<div id="taskbar">
+  <div id="start-orb" title="Start Menu"></div>
+  <div id="taskbar-clock"></div>
+</div>
+
+<!-- Start Menu -->
+<div id="start-menu">
+  <h3>Longhorn</h3>
+  <ul>
+    <li onclick="openWindow('My Computer')"><img class="start-menu-icon" src="https://i.imgur.com/wHsdnKd.png" alt="My Computer"/>My Computer</li>
+    <li onclick="openWindow('Documents')"><img class="start-menu-icon" src="https://i.imgur.com/h9JS2Bd.png" alt="Documents"/>Documents</li>
+    <li onclick="openWindow('Control Panel')"><img class="start-menu-icon" src="https://i.imgur.com/2cg79qj.png" alt="Control Panel"/>Control Panel</li>
+    <li onclick="openWindow('Settings')"><img class="start-menu-icon" src="https://i.imgur.com/izPcuhP.png" alt="Settings"/>Settings</li>
+    <li onclick="openWindow('Help and Support')"><img class="start-menu-icon" src="https://i.imgur.com/u0QGrTg.png" alt="Help and Support"/>Help and Support</li>
+    <li onclick="openWindow('Run')"><img class="start-menu-icon" src="https://i.imgur.com/LPHRR1U.png" alt="Run"/>Run</li>
+    <li onclick="openWindow('Log Off')"><img class="start-menu-icon" src="https://i.imgur.com/Oj0b0Jr.png" alt="Log Off"/>Log Off</li>
+  </ul>
+</div>
+
+<script>
+  // Clock update
+  function updateClock() {
+    const clock = document.getElementById('taskbar-clock');
+    const now = new Date();
+    let h = now.getHours();
+    let m = now.getMinutes();
+    let ampm = h >= 12 ? 'PM' : 'AM';
+    h = h % 12;
+    if(h === 0) h = 12;
+    m = m < 10 ? '0' + m : m;
+    clock.textContent = `${h}:${m} ${ampm}`;
+  }
+  setInterval(updateClock, 1000);
+  updateClock();
+
+  // Toggle start menu
+  const startOrb = document.getElementById('start-orb');
+  const startMenu = document.getElementById('start-menu');
+
+  startOrb.addEventListener('click', () => {
+    if (startMenu.style.display === 'flex') {
+      startMenu.style.display = 'none';
+    } else {
+      startMenu.style.display = 'flex';
+    }
+  });
+
+  // Close start menu clicking outside
+  document.addEventListener('click', (e) => {
+    if (!startMenu.contains(e.target) && e.target !== startOrb) {
+      startMenu.style.display = 'none';
+    }
+  });
+
+  // Windows container
+  const desktop = document.getElementById('desktop');
+
+  // Z-index management
+  let zIndexCounter = 10;
+
+  // Function to create a window
+  function openWindow(title) {
+    startMenu.style.display = 'none';
+
+    // Check if window already open
+    if(document.querySelector(`.window[data-title="${title}"]`)) {
+      bringToFront(document.querySelector(`.window[data-title="${title}"]`));
+      return;
+    }
+
+    const win = document.createElement('div');
+    win.className = 'window';
+    win.dataset.title = title;
+    win.style.top = '80px';
+    win.style.left = '100px';
+    win.style.zIndex = ++zIndexCounter;
+
+    // Window header
+    const header = document.createElement('div');
+    header.className = 'window-header';
+    header.textContent = title;
+
+    // Close button
+    const closeBtn = document.createElement('div');
+    closeBtn.className = 'window-close';
+    closeBtn.textContent = '×';
+    closeBtn.title = 'Close';
+
+    header.appendChild(closeBtn);
+    win.appendChild(header);
+
+    // Window content
+    const content = document.createElement('div');
+    content.className = 'window-content';
+
+    // Example content based on window title
+    switch(title) {
+      case 'My Computer':
+        content.innerHTML = '<p>This PC contains your drives, devices, and files.</p>';
+        break;
+      case 'Documents':
+        content.innerHTML = '<p>Your personal documents go here.</p>';
+        break;
+      case 'Control Panel':
+        content.innerHTML = '<p>Configure system settings here.</p>';
+        break;
+      case 'Settings':
+        content.innerHTML = '<p>Adjust preferences and system settings.</p>';
+        break;
+      case 'Help and Support':
+        content.innerHTML = '<p>Get help and find solutions.</p>';
+        break;
+      case 'Run':
+        content.innerHTML = '<p>Run commands or programs.</p>';
+        break;
+      case 'Log Off':
+        content.innerHTML = '<p>Logging off... (simulation)</p>';
+        setTimeout(() => {
+          alert('Logged off (simulation). Reload page to "log in" again.');
+        }, 1000);
+        break;
+      default:
+        content.textContent = 'Window content here.';
+    }
+
+    win.appendChild(content);
+    desktop.appendChild(win);
+
+    // Dragging
+    dragElement(win, header);
+
+    // Close window
+    closeBtn.addEventListener('click', () => {
+      desktop.removeChild(win);
+    });
+
+    // Bring to front on click
+    win.addEventListener('mousedown', () => {
+      bringToFront(win);
+    });
+  }
+
+  // Bring window to front
+  function bringToFront(el) {
+    zIndexCounter++;
+    el.style.zIndex = zIndexCounter;
+  }
+
+  // Dragging function
+  function dragElement(elmnt, dragHandle) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+
+    dragHandle.onmousedown = dragMouseDown;
+
+    function dragMouseDown(e) {
+      e.preventDefault();
+      pos3 = e.clientX;
+      pos4 = e.clientY;
+      document.onmouseup = closeDragElement;
+      document.onmousemove = elementDrag;
+      bringToFront(elmnt);
+    }
+
+    function elementDrag(e) {
+      e.preventDefault();
+      pos1 = pos3 - e.clientX;
+      pos2 = pos4 - e.clientY;
+      pos3 = e.clientX;
+      pos4 = e.clientY;
+
+      let newTop = elmnt.offsetTop - pos2;
+      let newLeft = elmnt.offsetLeft - pos1;
+
+      // Keep within viewport
+      const winWidth = window.innerWidth;
+      const winHeight = window.innerHeight;
+      const elWidth = elmnt.offsetWidth;
+      const elHeight = elmnt.offsetHeight;
+
+      if(newLeft < 0) newLeft = 0;
+      if(newTop < 0) newTop = 0;
+      if(newLeft + elWidth > winWidth) newLeft = winWidth - elWidth;
+      if(newTop + elHeight > winHeight - 40) newTop = winHeight - elHeight - 40; // above taskbar
+
+      elmnt.style.top = newTop + "px";
+      elmnt.style.left = newLeft + "px";
+    }
+
+    function closeDragElement() {
+      document.onmouseup = null;
+      document.onmousemove = null;
+    }
+  }
+</script>
+</body>
+</html>
